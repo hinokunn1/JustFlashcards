@@ -2,7 +2,7 @@ const CACHE_NAME = "flashcards-cache-v1";
 
 const urlsToCache = [
   "./",
-  "./index.html",
+  "JustFlashcards/index.html",
   "./manifest.json"
 ];
 
