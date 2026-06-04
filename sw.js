@@ -1,9 +1,9 @@
 const CACHE_NAME = "flashcards-cache-v1";
 
 const urlsToCache = [
-  "./",
-  "JustFlashcards/index.html",
-  "./manifest.json"
+  "/JustFlashcards/",
+  "/JustFlashcards/index.html",
+  "/JustFlashcards/manifest.json"
 ];
 
 self.addEventListener("install", event => {
