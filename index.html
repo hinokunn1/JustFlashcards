@@ -1,206 +1,697 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Just Flashcards</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Lucide Icons -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
   <style>
-    body { font-family: 'DM Sans', sans-serif; }
-    .flip-card { perspective: 800px; }
-    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
-    .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
-    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1rem; display: flex; align-items: center; justify-content: center; padding: 2rem; text-align: center; word-break: break-word; }
-    .flip-back { transform: rotateY(180deg); }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f5f5;
+    }
+
+    .flip-card {
+      perspective: 800px;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front,
+    .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .flip-back {
+      transform: rotateY(180deg);
+      background: #d1fae5;
+    }
   </style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/resizing_sdk.js" type="text/javascript"></script>
- <script src="/_sdk/telemetry_sdk.js"></script></head>
- <body data-template-id="__page-root" class="min-h-screen">
+</head>
+
+<body class="min-h-screen">
+
+  <!-- HEADER -->
   <header class="w-full max-w-4xl mx-auto px-4 pt-8 pb-4 flex items-center justify-between">
-   <div class="flex items-center gap-2"><button id="back-btn" class="hidden p-2 rounded-lg hover:bg-gray-200 transition" onclick="showSets()"><i data-lucide="arrow-left" style="width:20px;height:20px"></i></button>
-    <h1 data-template-id="app-title" id="header-title" class="canva-text text-2xl font-bold"></h1>
-   </div><button data-template-id="add-btn" id="main-add-btn" class="canva-button px-4 py-2 rounded-lg font-medium flex items-center gap-2" onclick="handleAdd()"></button>
+
+    <div class="flex items-center gap-2">
+      <button
+        id="back-btn"
+        class="hidden p-2 rounded-lg hover:bg-gray-200 transition"
+        onclick="showSets()"
+      >
+        <i data-lucide="arrow-left" style="width:20px;height:20px"></i>
+      </button>
+
+      <h1
+        id="header-title"
+        class="text-2xl font-bold"
+      >
+        Just Flashcards
+      </h1>
+    </div>
+
+    <button
+      id="main-add-btn"
+      class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+      onclick="handleAdd()"
+    >
+      <i data-lucide="plus"></i>
+      Add
+    </button>
+
   </header>
-  <main class="w-full max-w-4xl mx-auto px-4 pb-8"><!-- Sets View -->
-   <div id="sets-view">
-    <p data-template-id="empty-msg" id="empty-msg" class="canva-text text-center py-16 hidden"></p>
-    <div id="sets-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-   </div><!-- Cards View -->
-   <div id="cards-view" class="hidden">
-    <p data-template-id="empty-cards-msg" id="empty-cards-msg" class="canva-text text-center py-16 hidden"></p>
-    <div id="card-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-   </div>
-  </main><!-- Study Mode -->
-  <div id="study-mode" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-4" style="background:rgba(0,0,0,0.4)">
-   <div class="w-full max-w-md">
-    <div class="flip-card cursor-pointer w-full" style="height:280px" id="study-card" onclick="flipStudyCard()">
-     <div class="flip-inner shadow-xl">
-      <div class="flip-front bg-white" id="study-front"></div>
-      <div class="flip-back bg-emerald-50" id="study-back"></div>
-     </div>
+
+  <!-- MAIN -->
+  <main class="w-full max-w-4xl mx-auto px-4 pb-8">
+
+    <!-- SETS VIEW -->
+    <div id="sets-view">
+
+      <p
+        id="empty-msg"
+        class="text-center py-16 text-gray-500 hidden"
+      >
+        No flashcard sets yet.
+      </p>
+
+      <div
+        id="sets-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+      ></div>
+
     </div>
-    <div class="flex items-center justify-between mt-4 gap-2"><button class="px-3 py-2 rounded-lg bg-white shadow text-sm font-medium" onclick="studyPrev()"><i data-lucide="chevron-left" style="width:18px;height:18px"></i></button> <button class="px-3 py-2 rounded-lg bg-white shadow text-sm font-medium text-red-600" onclick="deleteFromStudy()"><i data-lucide="trash-2" style="width:18px;height:18px"></i></button> <label class="flex items-center gap-1 text-white text-sm select-none"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"> Shuffle</label> <button class="px-3 py-2 rounded-lg bg-white shadow text-sm font-medium" onclick="closeStudy()"><i data-lucide="x" style="width:18px;height:18px"></i></button> <button class="px-3 py-2 rounded-lg bg-white shadow text-sm font-medium" onclick="studyNext()"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></button>
+
+    <!-- CARDS VIEW -->
+    <div id="cards-view" class="hidden">
+
+      <p
+        id="empty-cards-msg"
+        class="text-center py-16 text-gray-500 hidden"
+      >
+        No cards in this set yet.
+      </p>
+
+      <div
+        id="card-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+      ></div>
+
     </div>
-   </div>
-  </div><!-- Add Set Modal -->
-  <div id="set-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4" style="background:rgba(0,0,0,0.4)">
-   <form class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl" onsubmit="addSet(event)">
-    <h2 data-template-id="set-modal-title" class="canva-text text-lg font-bold mb-4"></h2><label for="set-name-input" class="text-sm font-medium text-gray-700">Set Name</label> <input id="set-name-input" type="text" required class="w-full border rounded-lg px-3 py-2 mb-4 mt-1" placeholder="e.g. Biology, Spanish">
-    <div class="flex gap-2"><button type="submit" class="flex-1 bg-emerald-600 text-white rounded-lg py-2 font-medium">Create</button> <button type="button" class="flex-1 bg-gray-100 rounded-lg py-2 font-medium" onclick="closeSetModal()">Cancel</button>
+
+  </main>
+
+  <!-- STUDY MODE -->
+  <div
+    id="study-mode"
+    class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center px-4"
+    style="background: rgba(0,0,0,0.4)"
+  >
+
+    <div class="w-full max-w-md">
+
+      <div
+        class="flip-card cursor-pointer w-full"
+        style="height:280px"
+        id="study-card"
+        onclick="flipStudyCard()"
+      >
+
+        <div class="flip-inner shadow-xl">
+
+          <div
+            class="flip-front bg-white"
+            id="study-front"
+          ></div>
+
+          <div
+            class="flip-back"
+            id="study-back"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <div class="flex items-center justify-between mt-4 gap-2">
+
+        <button
+          class="px-3 py-2 rounded-lg bg-white shadow"
+          onclick="studyPrev()"
+        >
+          <i data-lucide="chevron-left"></i>
+        </button>
+
+        <button
+          class="px-3 py-2 rounded-lg bg-white shadow text-red-600"
+          onclick="deleteFromStudy()"
+        >
+          <i data-lucide="trash-2"></i>
+        </button>
+
+        <label class="flex items-center gap-1 text-white text-sm">
+          <input
+            type="checkbox"
+            id="shuffle-toggle"
+            onchange="toggleShuffle()"
+          />
+          Shuffle
+        </label>
+
+        <button
+          class="px-3 py-2 rounded-lg bg-white shadow"
+          onclick="closeStudy()"
+        >
+          <i data-lucide="x"></i>
+        </button>
+
+        <button
+          class="px-3 py-2 rounded-lg bg-white shadow"
+          onclick="studyNext()"
+        >
+          <i data-lucide="chevron-right"></i>
+        </button>
+
+      </div>
+
     </div>
-   </form>
-  </div><!-- Add Card Modal -->
-  <div id="card-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4" style="background:rgba(0,0,0,0.4)">
-   <form class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl" onsubmit="addCard(event)">
-    <h2 data-template-id="card-modal-title" class="canva-text text-lg font-bold mb-4"></h2><label for="front-input" class="text-sm font-medium text-gray-700">Front</label> <input id="front-input" type="text" required class="w-full border rounded-lg px-3 py-2 mb-3 mt-1" placeholder="Question or term"> <label for="back-input" class="text-sm font-medium text-gray-700">Back</label> <input id="back-input" type="text" required class="w-full border rounded-lg px-3 py-2 mb-4 mt-1" placeholder="Answer or definition">
-    <div class="flex gap-2"><button type="submit" class="flex-1 bg-emerald-600 text-white rounded-lg py-2 font-medium">Save</button> <button type="button" class="flex-1 bg-gray-100 rounded-lg py-2 font-medium" onclick="closeCardModal()">Cancel</button>
-    </div>
-   </form>
+
   </div>
-  <script src="/_sdk/editing_sdk.js"></script>
+
+  <!-- ADD SET MODAL -->
+  <div
+    id="set-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center px-4"
+    style="background: rgba(0,0,0,0.4)"
+  >
+
+    <form
+      class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+      onsubmit="addSet(event)"
+    >
+
+      <h2 class="text-lg font-bold mb-4">
+        Create New Set
+      </h2>
+
+      <label class="text-sm font-medium text-gray-700">
+        Set Name
+      </label>
+
+      <input
+        id="set-name-input"
+        type="text"
+        required
+        class="w-full border rounded-lg px-3 py-2 mb-4 mt-1"
+        placeholder="e.g. Biology"
+      />
+
+      <div class="flex gap-2">
+
+        <button
+          type="submit"
+          class="flex-1 bg-emerald-600 text-white rounded-lg py-2 font-medium"
+        >
+          Create
+        </button>
+
+        <button
+          type="button"
+          class="flex-1 bg-gray-100 rounded-lg py-2 font-medium"
+          onclick="closeSetModal()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- ADD CARD MODAL -->
+  <div
+    id="card-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center px-4"
+    style="background: rgba(0,0,0,0.4)"
+  >
+
+    <form
+      class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+      onsubmit="addCard(event)"
+    >
+
+      <h2 class="text-lg font-bold mb-4">
+        Add Flashcard
+      </h2>
+
+      <label class="text-sm font-medium text-gray-700">
+        Front
+      </label>
+
+      <input
+        id="front-input"
+        type="text"
+        required
+        class="w-full border rounded-lg px-3 py-2 mb-3 mt-1"
+        placeholder="Question or term"
+      />
+
+      <label class="text-sm font-medium text-gray-700">
+        Back
+      </label>
+
+      <input
+        id="back-input"
+        type="text"
+        required
+        class="w-full border rounded-lg px-3 py-2 mb-4 mt-1"
+        placeholder="Answer or definition"
+      />
+
+      <div class="flex gap-2">
+
+        <button
+          type="submit"
+          class="flex-1 bg-emerald-600 text-white rounded-lg py-2 font-medium"
+        >
+          Save
+        </button>
+
+        <button
+          type="button"
+          class="flex-1 bg-gray-100 rounded-lg py-2 font-medium"
+          onclick="closeCardModal()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
   <script>
     let data = JSON.parse(localStorage.getItem('jf_sets') || '[]');
-    let currentSetId = null;
-    let studyIndex = 0, studyOrder = [], shuffleOn = false;
 
-    function save() { localStorage.setItem('jf_sets', JSON.stringify(data)); }
-    function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-    function getCurrentSet() { return data.find(s => s.id === currentSetId); }
+    let currentSetId = null;
+
+    let studyIndex = 0;
+    let studyOrder = [];
+    let shuffleOn = false;
+
+    function save() {
+      localStorage.setItem('jf_sets', JSON.stringify(data));
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function getCurrentSet() {
+      return data.find(s => s.id === currentSetId);
+    }
 
     function renderSets() {
+
       const grid = document.getElementById('sets-grid');
       const empty = document.getElementById('empty-msg');
+
       grid.innerHTML = '';
-      if (data.length === 0) { empty.classList.remove('hidden'); return; }
+
+      if (data.length === 0) {
+        empty.classList.remove('hidden');
+        return;
+      }
+
       empty.classList.add('hidden');
+
       data.forEach(s => {
+
         const div = document.createElement('div');
-        div.className = 'bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-md transition relative group';
-        div.innerHTML = `<p class="font-medium text-gray-800 truncate">${esc(s.name)}</p><p class="text-xs text-gray-500 mt-1">${s.cards.length} card${s.cards.length !== 1 ? 's' : ''}</p>
-          <button class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 transition" onclick="event.stopPropagation();deleteSet('${s.id}')"><i data-lucide="x" style="width:14px;height:14px"></i></button>`;
+
+        div.className =
+          'bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-md transition relative group';
+
+        div.innerHTML = `
+          <p class="font-medium text-gray-800 truncate">
+            ${esc(s.name)}
+          </p>
+
+          <p class="text-xs text-gray-500 mt-1">
+            ${s.cards.length} card${s.cards.length !== 1 ? 's' : ''}
+          </p>
+
+          <button
+            class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 transition"
+            onclick="event.stopPropagation(); deleteSet('${s.id}')"
+          >
+            <i data-lucide="x" style="width:14px;height:14px"></i>
+          </button>
+        `;
+
         div.onclick = () => openSet(s.id);
+
         grid.appendChild(div);
+
       });
+
       lucide.createIcons();
     }
 
     function renderCards() {
+
       const set = getCurrentSet();
+
       const grid = document.getElementById('card-grid');
+
       const empty = document.getElementById('empty-cards-msg');
+
       grid.innerHTML = '';
-      if (!set || set.cards.length === 0) { empty.classList.remove('hidden'); return; }
+
+      if (!set || set.cards.length === 0) {
+        empty.classList.remove('hidden');
+        return;
+      }
+
       empty.classList.add('hidden');
+
       set.cards.forEach((c, i) => {
+
         const div = document.createElement('div');
-        div.className = 'bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-md transition relative group';
-        div.innerHTML = `<p class="text-sm font-medium text-gray-800 line-clamp-3">${esc(c.front)}</p>
-          <button class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 transition" onclick="event.stopPropagation();deleteCard(${i})"><i data-lucide="x" style="width:14px;height:14px"></i></button>`;
+
+        div.className =
+          'bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-md transition relative group';
+
+        div.innerHTML = `
+          <p class="text-sm font-medium text-gray-800 line-clamp-3">
+            ${esc(c.front)}
+          </p>
+
+          <button
+            class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 transition"
+            onclick="event.stopPropagation(); deleteCard(${i})"
+          >
+            <i data-lucide="x" style="width:14px;height:14px"></i>
+          </button>
+        `;
+
         div.onclick = () => openStudy(i);
+
         grid.appendChild(div);
+
       });
+
       lucide.createIcons();
     }
 
     function showSets() {
+
       currentSetId = null;
+
       document.getElementById('sets-view').classList.remove('hidden');
+
       document.getElementById('cards-view').classList.add('hidden');
+
       document.getElementById('back-btn').classList.add('hidden');
-      document.getElementById('header-title').textContent = document.getElementById('header-title').getAttribute('data-original') || 'Just Flashcards';
+
+      document.getElementById('header-title').textContent =
+        'Just Flashcards';
+
       renderSets();
     }
 
     function openSet(id) {
+
       currentSetId = id;
+
       const set = getCurrentSet();
+
       document.getElementById('sets-view').classList.add('hidden');
+
       document.getElementById('cards-view').classList.remove('hidden');
+
       document.getElementById('back-btn').classList.remove('hidden');
+
       document.getElementById('header-title').textContent = set.name;
+
       renderCards();
     }
 
     function handleAdd() {
-      if (currentSetId) openCardModal();
-      else openSetModal();
+
+      if (currentSetId) {
+        openCardModal();
+      } else {
+        openSetModal();
+      }
     }
 
-    function openSetModal() { document.getElementById('set-modal').classList.remove('hidden'); document.getElementById('set-name-input').focus(); }
-    function closeSetModal() { document.getElementById('set-modal').classList.add('hidden'); }
-    function openCardModal() { document.getElementById('card-modal').classList.remove('hidden'); document.getElementById('front-input').focus(); }
-    function closeCardModal() { document.getElementById('card-modal').classList.add('hidden'); }
+    function openSetModal() {
+      document.getElementById('set-modal').classList.remove('hidden');
+    }
+
+    function closeSetModal() {
+      document.getElementById('set-modal').classList.add('hidden');
+    }
+
+    function openCardModal() {
+      document.getElementById('card-modal').classList.remove('hidden');
+    }
+
+    function closeCardModal() {
+      document.getElementById('card-modal').classList.add('hidden');
+    }
 
     function addSet(e) {
+
       e.preventDefault();
-      const name = document.getElementById('set-name-input').value.trim();
+
+      const name =
+        document.getElementById('set-name-input').value.trim();
+
       if (!name) return;
-      data.push({ id: Date.now().toString(), name, cards: [] });
-      save(); renderSets(); closeSetModal();
+
+      data.push({
+        id: Date.now().toString(),
+        name,
+        cards: []
+      });
+
+      save();
+
+      renderSets();
+
+      closeSetModal();
+
       document.getElementById('set-name-input').value = '';
     }
 
-    function deleteSet(id) { data = data.filter(s => s.id !== id); save(); renderSets(); }
+    function deleteSet(id) {
+
+      data = data.filter(s => s.id !== id);
+
+      save();
+
+      renderSets();
+    }
 
     function addCard(e) {
+
       e.preventDefault();
-      const f = document.getElementById('front-input').value.trim();
-      const b = document.getElementById('back-input').value.trim();
+
+      const f =
+        document.getElementById('front-input').value.trim();
+
+      const b =
+        document.getElementById('back-input').value.trim();
+
       if (!f || !b) return;
+
       const set = getCurrentSet();
-      set.cards.push({ front: f, back: b });
-      save(); renderCards(); closeCardModal();
+
+      set.cards.push({
+        front: f,
+        back: b
+      });
+
+      save();
+
+      renderCards();
+
+      closeCardModal();
+
       document.getElementById('front-input').value = '';
+
       document.getElementById('back-input').value = '';
     }
 
-    function deleteCard(i) { getCurrentSet().cards.splice(i, 1); save(); renderCards(); }
+    function deleteCard(i) {
 
-    // Study mode
-    function buildOrder(startIndex) {
-      const set = getCurrentSet();
-      studyOrder = set.cards.map((_, i) => i);
-      if (shuffleOn) { for (let i = studyOrder.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[studyOrder[i], studyOrder[j]] = [studyOrder[j], studyOrder[i]]; } studyIndex = 0; }
-      else { studyIndex = startIndex; }
+      getCurrentSet().cards.splice(i, 1);
+
+      save();
+
+      renderCards();
     }
 
-    function openStudy(i) { buildOrder(i); showStudyCard(); document.getElementById('study-mode').classList.remove('hidden'); }
-    function closeStudy() { document.getElementById('study-mode').classList.add('hidden'); document.getElementById('study-card').classList.remove('flipped'); }
+    function buildOrder(startIndex) {
+
+      const set = getCurrentSet();
+
+      studyOrder = set.cards.map((_, i) => i);
+
+      if (shuffleOn) {
+
+        for (let i = studyOrder.length - 1; i > 0; i--) {
+
+          const j = Math.floor(Math.random() * (i + 1));
+
+          [studyOrder[i], studyOrder[j]] =
+          [studyOrder[j], studyOrder[i]];
+        }
+
+        studyIndex = 0;
+
+      } else {
+
+        studyIndex = startIndex;
+      }
+    }
+
+    function openStudy(i) {
+
+      buildOrder(i);
+
+      showStudyCard();
+
+      document.getElementById('study-mode')
+        .classList.remove('hidden');
+    }
+
+    function closeStudy() {
+
+      document.getElementById('study-mode')
+        .classList.add('hidden');
+
+      document.getElementById('study-card')
+        .classList.remove('flipped');
+    }
 
     function showStudyCard() {
+
       const set = getCurrentSet();
+
       const card = set.cards[studyOrder[studyIndex]];
-      if (!card) { closeStudy(); return; }
-      document.getElementById('study-front').textContent = card.front;
-      document.getElementById('study-back').textContent = card.back;
-      document.getElementById('study-card').classList.remove('flipped');
+
+      if (!card) {
+        closeStudy();
+        return;
+      }
+
+      document.getElementById('study-front').textContent =
+        card.front;
+
+      document.getElementById('study-back').textContent =
+        card.back;
+
+      document.getElementById('study-card')
+        .classList.remove('flipped');
     }
 
-    function flipStudyCard() { document.getElementById('study-card').classList.toggle('flipped'); }
-    function studyNext() { studyIndex = (studyIndex + 1) % studyOrder.length; showStudyCard(); }
-    function studyPrev() { studyIndex = (studyIndex - 1 + studyOrder.length) % studyOrder.length; showStudyCard(); }
-    function toggleShuffle() { shuffleOn = document.getElementById('shuffle-toggle').checked; buildOrder(studyOrder[studyIndex]); showStudyCard(); }
+    function flipStudyCard() {
+
+      document.getElementById('study-card')
+        .classList.toggle('flipped');
+    }
+
+    function studyNext() {
+
+      studyIndex =
+        (studyIndex + 1) % studyOrder.length;
+
+      showStudyCard();
+    }
+
+    function studyPrev() {
+
+      studyIndex =
+        (studyIndex - 1 + studyOrder.length)
+        % studyOrder.length;
+
+      showStudyCard();
+    }
+
+    function toggleShuffle() {
+
+      shuffleOn =
+        document.getElementById('shuffle-toggle').checked;
+
+      buildOrder(studyOrder[studyIndex] || 0);
+
+      showStudyCard();
+    }
 
     function deleteFromStudy() {
-      const set = getCurrentSet();
-      set.cards.splice(studyOrder[studyIndex], 1);
-      save(); renderCards();
-      if (set.cards.length === 0) { closeStudy(); return; }
-      buildOrder(0); showStudyCard();
-    }
 
-    // Migrate old data
-    const oldCards = JSON.parse(localStorage.getItem('jf_cards') || '[]');
-    if (oldCards.length > 0 && data.length === 0) {
-      data.push({ id: '1', name: 'My Cards', cards: oldCards });
-      save(); localStorage.removeItem('jf_cards');
+      const set = getCurrentSet();
+
+      set.cards.splice(studyOrder[studyIndex], 1);
+
+      save();
+
+      renderCards();
+
+      if (set.cards.length === 0) {
+        closeStudy();
+        return;
+      }
+
+      buildOrder(0);
+
+      showStudyCard();
     }
 
     renderSets();
+
     lucide.createIcons();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a062d301dfde5657',t:'MTc4MDUzMjk3Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+</body>
 </html>
