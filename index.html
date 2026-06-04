@@ -6,6 +6,9 @@
 
   <title>Just Flashcards</title>
 
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#10b981">
+
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -691,6 +694,15 @@
     renderSets();
 
     lucide.createIcons();
+
+    if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("Service Worker Registered"))
+      .catch(err => console.log("SW registration failed:", err));
+  });
+}
+    
   </script>
 
 <footer class="fixed bottom-3 left-1/2 -translate-x-1/2 text-gray-400 text-xs">
