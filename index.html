@@ -111,6 +111,7 @@
       document.getElementById('cards-view').classList.add('hidden');
       document.getElementById('back-btn').classList.add('hidden');
       document.getElementById('header-title').textContent = document.getElementById('header-title').getAttribute('data-original') || 'Just Flashcards';
+      updateButtonText();
       renderSets();
     }
 
@@ -121,12 +122,23 @@
       document.getElementById('cards-view').classList.remove('hidden');
       document.getElementById('back-btn').classList.remove('hidden');
       document.getElementById('header-title').textContent = set.name;
+      updateButtonText();
       renderCards();
     }
 
     function handleAdd() {
       if (currentSetId) openCardModal();
       else openSetModal();
+    }
+
+    function updateButtonText() {
+      const btn = document.getElementById('main-add-btn');
+      if (currentSetId) {
+        btn.innerHTML = '<i data-lucide="plus" style="width:18px;height:18px"></i> Add Card';
+      } else {
+        btn.innerHTML = '<i data-lucide="plus" style="width:18px;height:18px"></i> Create Set';
+      }
+      lucide.createIcons();
     }
 
     function openSetModal() { document.getElementById('set-modal').classList.remove('hidden'); document.getElementById('set-name-input').focus(); }
@@ -139,7 +151,7 @@
       const name = document.getElementById('set-name-input').value.trim();
       if (!name) return;
       data.push({ id: Date.now().toString(), name, cards: [] });
-      save(); renderSets(); closeSetModal();
+      save(); updateButtonText(); renderSets(); closeSetModal();
       document.getElementById('set-name-input').value = '';
     }
 
@@ -202,5 +214,5 @@
     renderSets();
     lucide.createIcons();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a062d301dfde5657',t:'MTc4MDUzMjk3Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a062d7a76c1478b5',t:'MTc4MDUzMzE2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
