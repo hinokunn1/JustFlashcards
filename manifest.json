@@ -1,7 +1,7 @@
 {
   "name": "Just Flashcards",
   "short_name": "Flashcards",
-  "start_url": "/",
+  "start_url": "/JustFlashcards/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#10b981",
